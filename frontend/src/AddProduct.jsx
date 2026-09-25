@@ -64,7 +64,7 @@ function AddProduct({ onProductAdded }) {
         }
 
         const response = await fetch(
-            "http://localhost:5000/api/products",
+            "https://ecommerce-product-management-hysx.onrender.com/api/products",
             {
                 method: "POST",
                 headers: {

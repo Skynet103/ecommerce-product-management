@@ -6,9 +6,8 @@ function Login({ onLogin }) {
     const [message, setMessage] = useState("");
 
     return (
-        <div>
-            <h2>Login</h2>
-
+        <div className="login-page">
+            <h2>E-Commerce Login</h2>
             <input
                 type="email"
                 placeholder="Email"
@@ -27,7 +26,7 @@ function Login({ onLogin }) {
                 onClick={async () => {
                     try {
                         const response = await fetch(
-                            "http://localhost:5000/api/users/login",
+                            "https://ecommerce-product-management-hysx.onrender.com/api/users/login",
                             {
                                 method: "POST",
                                 headers: {

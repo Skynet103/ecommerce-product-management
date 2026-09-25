@@ -67,7 +67,7 @@ function EditProduct({ product, onUpdated, onCancel }) {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/products/${product._id}`,
+                `https://ecommerce-product-management-hysx.onrender.com/api/products/${product._id}`,
                 {
                     method: "PUT",
                     headers: {

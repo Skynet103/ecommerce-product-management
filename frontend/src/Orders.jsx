@@ -6,7 +6,7 @@ function Orders({ onBack }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/orders/my-orders", {
+        fetch("https://ecommerce-product-management-hysx.onrender.com/api/orders/my-orders", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }

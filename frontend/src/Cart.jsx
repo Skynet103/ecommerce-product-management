@@ -180,7 +180,7 @@ function Cart({ cart, setCart, onBack }) {
                             onClick={async () => {
                                 try {
                                     const response = await fetch(
-                                        "http://localhost:5000/api/orders",
+                                        "https://ecommerce-product-management-hysx.onrender.com/api/orders",
                                         {
                                             method: "POST",
                                             headers: {

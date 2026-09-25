@@ -66,7 +66,7 @@ function App() {
     setError("");
 
     fetch(
-        `http://localhost:5000/api/products?search=${search}&category=${category}&minPrice=${appliedMinPrice}&maxPrice=${appliedMaxPrice}&page=${page}&limit=6`,
+        `https://ecommerce-product-management-hysx.onrender.com/api/products?search=${search}&category=${category}&minPrice=${appliedMinPrice}&maxPrice=${appliedMaxPrice}&page=${page}&limit=6`,
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -405,7 +405,7 @@ function App() {
                                     setDeleteMessage("");
 
                                     const response = await fetch(
-                                        `http://localhost:5000/api/products/${product._id}`,
+                                        `https://ecommerce-product-management-hysx.onrender.com/api/products/${product._id}`,
                                         {
                                             method: "DELETE",
                                             headers: {
