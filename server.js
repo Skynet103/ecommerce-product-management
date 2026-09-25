@@ -8,7 +8,11 @@ const orderRoutes = require("./routes/orderRoutes");
 const connectDB = require("./config/db");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 connectDB();
 
