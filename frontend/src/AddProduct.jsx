@@ -64,7 +64,7 @@ function AddProduct({ onProductAdded }) {
         }
 
         const response = await fetch(
-            "https://ecommerce-product-management-hysx.onrender.com/api/products",
+            `${import.meta.env.VITE_API_URL}/api/products`,
             {
                 method: "POST",
                 headers: {

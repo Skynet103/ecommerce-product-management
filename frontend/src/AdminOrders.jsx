@@ -6,7 +6,7 @@ function AdminOrders({ onBack }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("https://ecommerce-product-management-hysx.onrender.com/api/orders/admin", {
+        fetch(`${import.meta.env.VITE_API_URL}/api/orders/admin`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
@@ -120,7 +120,7 @@ function AdminOrders({ onBack }) {
 
                                     try {
                                         const response = await fetch(
-                                            `https://ecommerce-product-management-hysx.onrender.com/api/orders/${order._id}/status`,
+                                            `${import.meta.env.VITE_API_URL}/api/orders/${order._id}/status`,
                                             {
                                                 method: "PUT",
                                                 headers: {

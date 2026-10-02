@@ -67,7 +67,7 @@ function EditProduct({ product, onUpdated, onCancel }) {
 
         try {
             const response = await fetch(
-                `https://ecommerce-product-management-hysx.onrender.com/api/products/${product._id}`,
+                `${import.meta.env.VITE_API_URL}/api/products/${product._id}`,
                 {
                     method: "PUT",
                     headers: {

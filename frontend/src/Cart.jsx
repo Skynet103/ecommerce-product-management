@@ -180,7 +180,7 @@ function Cart({ cart, setCart, onBack }) {
                             onClick={async () => {
                                 try {
                                     const response = await fetch(
-                                        "https://ecommerce-product-management-hysx.onrender.com/api/orders",
+                                        `${import.meta.env.VITE_API_URL}/api/orders`,
                                         {
                                             method: "POST",
                                             headers: {

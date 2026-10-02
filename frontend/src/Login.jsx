@@ -26,7 +26,7 @@ function Login({ onLogin }) {
                 onClick={async () => {
                     try {
                         const response = await fetch(
-                            "https://ecommerce-product-management-hysx.onrender.com/api/users/login",
+                            `${import.meta.env.VITE_API_URL}/api/users/login`,
                             {
                                 method: "POST",
                                 headers: {
