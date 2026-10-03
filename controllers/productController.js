@@ -96,6 +96,13 @@ if (!Number.isInteger(limitNumber) || limitNumber < 1) {
     });
 }
 
+// Limit pagination to avoid server resource exhaustion
+if (limitNumber > 100) {
+    return res.status(400).json({
+        message: "Limit cannot exceed 100"
+    });
+}
+
 const skip = (pageNumber - 1) * limitNumber;
 
         const products = await Product.find(filter)

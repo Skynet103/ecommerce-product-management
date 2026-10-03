@@ -8,7 +8,7 @@ function EditProduct({ product, onUpdated, onCancel }) {
     const [stock, setStock] = useState(product.stock);
     const [image, setImage] = useState(product.image || "");
     const [message, setMessage] = useState("");
-    
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -65,6 +65,8 @@ function EditProduct({ product, onUpdated, onCancel }) {
             return;
         }
 
+        setIsLoading(true);
+        setMessage("");
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/products/${product._id}`,
@@ -86,16 +88,18 @@ function EditProduct({ product, onUpdated, onCancel }) {
             );
 
             const data = await response.json();
-            
 
             if (response.ok) {
                 console.log("Product updated successfully");
                 onUpdated(data);
             } else {
-                console.error(data.message);
+                setMessage(data.message);
             }
         } catch (error) {
             console.error("Update error:", error);
+            setMessage("Unable to connect to server");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -107,44 +111,50 @@ function EditProduct({ product, onUpdated, onCancel }) {
                 <input
                     type="text"
                     value={name}
+                    disabled={isLoading}
                     onChange={(event) => setName(event.target.value)}
                 />
 
                 <input
                     type="text"
                     value={description}
+                    disabled={isLoading}
                     onChange={(event) => setDescription(event.target.value)}
                 />
 
                 <input
                     type="number"
                     value={price}
+                    disabled={isLoading}
                     onChange={(event) => setPrice(event.target.value)}
                 />
 
                 <input
                     type="text"
                     value={category}
+                    disabled={isLoading}
                     onChange={(event) => setCategory(event.target.value)}
                 />
 
                 <input
                     type="number"
                     value={stock}
+                    disabled={isLoading}
                     onChange={(event) => setStock(event.target.value)}
                 />
                 <input
                     type="text"
                     placeholder="Image URL"
                     value={image}
+                    disabled={isLoading}
                     onChange={(event) => setImage(event.target.value)}
                 />
 
-                <button className="update-button" type="submit">
-                    Update Product
+                <button className="update-button" type="submit" disabled={isLoading}>
+                    {isLoading ? "Updating..." : "Update Product"}
                 </button>
 
-                <button className="cancel-button" type="button" onClick={onCancel}>
+                <button className="cancel-button" type="button" onClick={onCancel} disabled={isLoading}>
                     Cancel
                 </button>
             </form>

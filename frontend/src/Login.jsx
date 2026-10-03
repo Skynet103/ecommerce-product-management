@@ -4,6 +4,7 @@ function Login({ onLogin }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <div className="login-page">
@@ -12,6 +13,7 @@ function Login({ onLogin }) {
                 type="email"
                 placeholder="Email"
                 value={email}
+                disabled={isLoading}
                 onChange={(event) => setEmail(event.target.value)}
             />
 
@@ -19,11 +21,15 @@ function Login({ onLogin }) {
                 type="password"
                 placeholder="Password"
                 value={password}
+                disabled={isLoading}
                 onChange={(event) => setPassword(event.target.value)}
             />
 
             <button
+                disabled={isLoading}
                 onClick={async () => {
+                    setIsLoading(true);
+                    setMessage("");
                     try {
                         const response = await fetch(
                             `${import.meta.env.VITE_API_URL}/api/users/login`,
@@ -50,11 +56,13 @@ function Login({ onLogin }) {
                         }
                     } catch (error) {
                         console.error("Login error:", error);
-                         setMessage("Unable to connect to server");
+                        setMessage("Unable to connect to server");
+                    } finally {
+                        setIsLoading(false);
                     }
                 }}
             >
-                Login
+                {isLoading ? "Logging in..." : "Login"}
             </button>
 
             {message && (

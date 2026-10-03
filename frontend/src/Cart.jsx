@@ -1,6 +1,8 @@
 import { useState } from "react";
+
 function Cart({ cart, setCart, onBack }) {
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [deliveryDetails, setDeliveryDetails] = useState({
         name: "",
         phone: "",
@@ -18,7 +20,7 @@ function Cart({ cart, setCart, onBack }) {
             [name]: value
         });
     };
-    
+
     const increaseQuantity = (id) => {
         setCart(
             cart.map((item) =>
@@ -129,6 +131,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="Full Name"
                                 value={deliveryDetails.name}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
                             <input
@@ -137,6 +140,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="Phone Number"
                                 value={deliveryDetails.phone}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
                             <input
@@ -145,6 +149,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="Address"
                                 value={deliveryDetails.address}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
                             <input
@@ -153,6 +158,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="City"
                                 value={deliveryDetails.city}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
                             <input
@@ -161,6 +167,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="State"
                                 value={deliveryDetails.state}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
                             <input
@@ -169,6 +176,7 @@ function Cart({ cart, setCart, onBack }) {
                                 placeholder="PIN Code"
                                 value={deliveryDetails.pinCode}
                                 onChange={handleDeliveryChange}
+                                disabled={isLoading}
                             />
 
 
@@ -177,7 +185,10 @@ function Cart({ cart, setCart, onBack }) {
                         </h2>
 
                         <button
+                            disabled={isLoading}
                             onClick={async () => {
+                                setMessage("");
+                                setIsLoading(true);
                                 try {
                                     const response = await fetch(
                                         `${import.meta.env.VITE_API_URL}/api/orders`,
@@ -187,7 +198,6 @@ function Cart({ cart, setCart, onBack }) {
                                                 "Content-Type": "application/json",
                                                 Authorization: `Bearer ${localStorage.getItem("token")}`
                                             },
-
 
                                             body: JSON.stringify({
                                                 items: cart.map((item) => ({
@@ -213,14 +223,16 @@ function Cart({ cart, setCart, onBack }) {
                                 } catch (error) {
                                     console.error("Order error:", error);
                                     setMessage("Unable to connect to server");
+                                } finally {
+                                    setIsLoading(false);
                                 }
                             }}
                         >
-                            Place Order
+                            {isLoading ? "Placing Order..." : "Place Order"}
                         </button>
 
                         {message && (
-                            <p style={{ fontWeight: "bold" }}>
+                            <p style={{ fontWeight: "bold", color: message.includes("successfully") ? "green" : "red" }}>
                                 {message}
                             </p>
                         )}

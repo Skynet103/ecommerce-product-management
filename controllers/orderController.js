@@ -6,12 +6,21 @@ const createOrder = async (req, res) => {
     const session = await mongoose.startSession();
 
     try {
-        const { items,deliveryDetails } = req.body;
+        const { items, deliveryDetails } = req.body;
 
         if (!items || items.length === 0) {
             return res.status(400).json({
                 message: "Cart is empty"
             });
+        }
+
+        // Validate that all requested quantities are positive integers
+        for (const item of items) {
+            if (!item.quantity || item.quantity <= 0 || !Number.isInteger(item.quantity)) {
+                return res.status(400).json({
+                    message: `Invalid quantity for product ${item.name || item.product}. Quantity must be a positive integer.`
+                });
+            }
         }
 
         if (
@@ -30,12 +39,15 @@ const createOrder = async (req, res) => {
 
         session.startTransaction();
 
-        // Check stock for every product first
+        // Check stock and fetch actual prices for every product first
+        const validatedItems = [];
+        let calculatedTotal = 0;
+
         for (const item of items) {
             const product = await Product.findById(item.product).session(session);
 
             if (!product) {
-                throw new Error(`Product not found: ${item.name}`);
+                throw new Error(`Product not found: ${item.name || item.product}`);
             }
 
             if (product.stock < item.quantity) {
@@ -43,14 +55,17 @@ const createOrder = async (req, res) => {
                     `Not enough stock for ${product.name}. Available stock: ${product.stock}`
                 );
             }
-        }
 
-        let calculatedTotal = 0;
+            // Use database price instead of client-supplied price
+            const itemTotal = product.price * item.quantity;
+            calculatedTotal += itemTotal;
 
-        for (const item of items) {
-            const product = await Product.findById(item.product).session(session);
-
-            calculatedTotal += product.price * item.quantity;
+            validatedItems.push({
+                product: product._id,
+                name: product.name,
+                price: product.price,
+                quantity: item.quantity
+            });
         }
 
         // Reduce stock
@@ -74,7 +89,7 @@ const createOrder = async (req, res) => {
             [
                 {
                     user: req.user.id,
-                    items,
+                    items: validatedItems,
                     deliveryDetails,
                     totalAmount: calculatedTotal
                 }

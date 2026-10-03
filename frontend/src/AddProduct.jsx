@@ -8,6 +8,7 @@ function AddProduct({ onProductAdded }) {
     const [stock, setStock] = useState("");
     const [image, setImage] = useState("");
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -63,32 +64,41 @@ function AddProduct({ onProductAdded }) {
             return;
         }
 
-        const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/products`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify({
-                    name,
-                    description,
-                    price: Number(price),
-                    category,
-                    stock: Number(stock),
-                    image
-                })
+        setIsLoading(true);
+        setMessage("");
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/products`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({
+                        name,
+                        description,
+                        price: Number(price),
+                        category,
+                        stock: Number(stock),
+                        image
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage("Product added successfully");
+                onProductAdded();
+            } else {
+                setMessage(data.message);
             }
-        );
-
-        const data = await response.json();
-
-        if (response.ok) {
-            setMessage("Product added successfully");
-            onProductAdded();
-        } else {
-            setMessage(data.message);
+        } catch (error) {
+            console.error("Add product error:", error);
+            setMessage("Unable to connect to server");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -101,6 +111,7 @@ function AddProduct({ onProductAdded }) {
                     type="text"
                     placeholder="Product name"
                     value={name}
+                    disabled={isLoading}
                     onChange={(event) => setName(event.target.value)}
                 />
 
@@ -108,6 +119,7 @@ function AddProduct({ onProductAdded }) {
                     type="text"
                     placeholder="Description"
                     value={description}
+                    disabled={isLoading}
                     onChange={(event) => setDescription(event.target.value)}
                 />
 
@@ -115,6 +127,7 @@ function AddProduct({ onProductAdded }) {
                     type="number"
                     placeholder="Price"
                     value={price}
+                    disabled={isLoading}
                     onChange={(event) => setPrice(event.target.value)}
                 />
 
@@ -122,6 +135,7 @@ function AddProduct({ onProductAdded }) {
                     type="text"
                     placeholder="Category"
                     value={category}
+                    disabled={isLoading}
                     onChange={(event) => setCategory(event.target.value)}
                 />
 
@@ -129,6 +143,7 @@ function AddProduct({ onProductAdded }) {
                     type="number"
                     placeholder="Stock"
                     value={stock}
+                    disabled={isLoading}
                     onChange={(event) => setStock(event.target.value)}
                 />
 
@@ -136,16 +151,17 @@ function AddProduct({ onProductAdded }) {
                     type="text"
                     placeholder="Image URL"
                     value={image}
+                    disabled={isLoading}
                     onChange={(event) => setImage(event.target.value)}
                 />
 
-                <button className="add-button" type="submit">
-                    Add Product
+                <button className="add-button" type="submit" disabled={isLoading}>
+                    {isLoading ? "Adding..." : "Add Product"}
                 </button>
             </form>
 
             {message && (
-                <p style={{ color: "green", fontWeight: "bold" }}>
+                <p style={{ color: message.includes("successfully") ? "green" : "red", fontWeight: "bold" }}>
                     {message}
                 </p>
             )}
