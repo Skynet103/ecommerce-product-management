@@ -49,13 +49,11 @@ function Login({ onLogin }) {
 
                         if (response.ok) {
                             localStorage.setItem("token", data.token);
-                            console.log("Login successful");
                             onLogin();
                         } else {
                             setMessage(data.message);
                         }
                     } catch (error) {
-                        console.error("Login error:", error);
                         setMessage("Unable to connect to server");
                     } finally {
                         setIsLoading(false);
